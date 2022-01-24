@@ -93,13 +93,14 @@
             let last = address.slice(-4)
             let miniAddress = `${first}....${last}`
 
-            var element = document.getElementById("connect-button-1");
-            element.innerHTML = miniAddress;
+            const connectButton1 = document.getElementById("connect-button-1");
+            connectButton1.innerHTML = miniAddress;
 
-            var element = document.getElementById("connect-button-2");
-            element.innerHTML = miniAddress;
-            
-            document.getElementById("connect-button-1").style.cursor = "default";
+            const connectButton2 = document.getElementById("connect-button-2");
+            connectButton2.innerHTML = miniAddress;
+
+            connectButton1.style.cursor = "default";
+            connectButton2.style.cursor = "default";
             document.getElementById("mint-selection").style.display = "flex";
             
 
