@@ -1,5 +1,56 @@
 <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script type="text/javascript">
-    
+    let networkProvider = "https://eth-rinkeby.alchemyapi.io/v2/df-3YgaL0V-V0leLzSxIw-ifNK1wUbq4"
+    let networkVersion = 4
+
+    window.onload = function () {
+
+        var connectButton = document.getElementById('connect-button-1')
+        if (connectButton) {
+            document.getElementById('connect-button').onclick = function () {
+                connectWallet();
+            };
+        }
+
+        var connectButton = document.getElementById('connect-button-2')
+        if (connectButton) {
+            document.getElementById('connect-button').onclick = function () {
+                connectWallet();
+            };
+        }
+    }
+
+    async function connectWallet() {
+
+        if (!window.ethereum) { alert("No Wallet Detected") }
+        else if (window.ethereum.networkVersion != networkVersion) {
+            alert("Wrong Network. Please connect to Ethereum Network")
+        }
+        else {
+            const [address] = await window.ethereum.enable();
+
+            // When user changes their account.
+            window.ethereum.on("accountsChanged", ([newAddress]) => {
+                // Reload page
+                window.location.reload();
+            });
+            // When user changes their network.
+            window.ethereum.on("chainChanged", ([newChainId]) => {
+                // Reload Page
+                window.location.reload();
+            });
+
+            let first = address.substring(0, 5)
+            let last = address.slice(-4)
+            let miniAddress = `${first}....${last}`
+
+            var element = document.getElementById("connect-button-1");
+            element.innerHTML = miniAddress;
+
+            document.getElementById("connect-button-1").style.cursor = "default";
+            document.getElementById("connect-button-2").style.display = "none";
+
+        }
+    }
 </script>
