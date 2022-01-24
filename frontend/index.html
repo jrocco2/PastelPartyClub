@@ -3,6 +3,7 @@
 <script type="text/javascript">
     let networkProvider = "https://eth-rinkeby.alchemyapi.io/v2/df-3YgaL0V-V0leLzSxIw-ifNK1wUbq4"
     let networkVersion = 4
+    let contractAddress = "0xff0dFC9D9AED18cbb51f321822E331bF435A156E"
 
     window.onload = function () {
 
@@ -13,12 +14,59 @@
             };
         }
 
-        var connectButton2 = document.getElementById('connect-button-2')
+        const connectButton2 = document.getElementById('connect-button-2')
         if (connectButton2) {
             connectButton2.onclick = function () {
                 connectWallet();
             };
         }
+
+        const mintButton1 = document.getElementById('mint-1')
+        if (mintButton1) {
+            mintButton1.onclick = function () {
+                mint(1);
+            };
+        }
+
+        const mintButton3 = document.getElementById('mint-3')
+        if (mintButton3) {
+            mintButton3.onclick = function () {
+                mint(3);
+            };
+        }
+    }
+
+    async function mint(amount) {
+
+        let provider = new ethers.providers.Web3Provider(window.ethereum);
+
+        let abi = [
+            "function mint(uint256 quantity) external payable",
+            "function cost() external view returns(uint256)"
+        ];
+
+        let contract = new ethers.Contract(
+            contractAddress,
+            abi,
+            provider.getSigner()
+        );
+
+        document.getElementById(`mint-${amount}`).innerHTML = `<i class="fa fa-spinner fa-spin"></i>`
+
+        try {
+            let price = await contract.cost()
+            let txn = await contract.mint(amount, { value: price.mul(amount) })
+            const receipt = await txn.wait();
+
+            // deactivateLoading()
+            window.location.reload();
+        } catch (error) {
+            alert(error.message)
+            window.location.reload();
+
+            // deactivateLoading()
+        }
+
     }
 
     async function connectWallet() {

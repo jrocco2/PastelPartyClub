@@ -21,7 +21,8 @@ contract PastelPartyClub is ERC721A, ReentrancyGuard, Pausable {
 
     // // metadata URI
     string private _baseTokenURI;
-    string private _revealURI = "ipfs://QmabicvNRx8nh7fZNV35tmsSfvsFBffHxdXGNJjsb3Sos2/1.json";
+    string private _revealURI =
+        "ipfs://QmabicvNRx8nh7fZNV35tmsSfvsFBffHxdXGNJjsb3Sos2/1.json";
 
     mapping(address => uint256) public allowlist;
 
@@ -63,6 +64,16 @@ contract PastelPartyClub is ERC721A, ReentrancyGuard, Pausable {
             publicSaleMint(quantity);
         } else {
             whitelistMint(quantity);
+        }
+    }
+
+    function cost() external view returns(uint256) {
+        if (publicSaleIsActive) {
+            return publicPrice;
+        } else if (whitelistSaleIsActive) {
+            return whitelistPrice;
+        } else {
+            return 0;
         }
     }
 
@@ -149,7 +160,6 @@ contract PastelPartyClub is ERC721A, ReentrancyGuard, Pausable {
             _safeMint(accounts[i], 1);
         }
     }
-
 
     function withdrawMoney() external onlyOwner nonReentrant {
         (bool success, ) = msg.sender.call{value: address(this).balance}("");
