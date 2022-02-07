@@ -12,17 +12,17 @@ contract PastelPartyClub is ERC721A, ReentrancyGuard, Pausable {
     using Strings for uint256;
 
     uint256 public constant maxPerAddressDuringMint = 10;
-    uint256 public constant sizeOfCollection = 10000;
+    uint256 public constant sizeOfCollection = 7777;
 
-    uint64 public whitelistPrice = 0.2 ether;
-    uint64 public publicPrice = 0.2 ether;
+    uint64 public whitelistPrice = 0.03 ether;
+    uint64 public publicPrice = 0.04 ether;
     bool public whitelistSaleIsActive;
     bool public publicSaleIsActive;
 
     // // metadata URI
     string private _baseTokenURI;
     string private _revealURI =
-        "ipfs://QmabicvNRx8nh7fZNV35tmsSfvsFBffHxdXGNJjsb3Sos2/1.json";
+        "";
 
     mapping(address => uint256) public allowlist;
 

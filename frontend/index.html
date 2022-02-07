@@ -21,22 +21,45 @@
             };
         }
 
-        const mintButton1 = document.getElementById('mint-1')
-        if (mintButton1) {
-            mintButton1.onclick = function () {
-                mint(1);
+        const mintButton = document.getElementById('mint-button')
+        if (mintButton) {
+            mintButton.onclick = function () {
+                mint();
             };
         }
 
-        const mintButton3 = document.getElementById('mint-3')
-        if (mintButton3) {
-            mintButton3.onclick = function () {
-                mint(3);
+        const increaseButton = document.getElementById('increase-button')
+        if (increaseButton) {
+            increaseButton.onclick = function () {
+                increaseMintCount();
+            };
+        }
+
+        const decreaseButton = document.getElementById('decrease-button')
+        if (decreaseButton) {
+            decreaseButton.onclick = function () {
+                decreaseMintCount();
             };
         }
     }
 
-    async function mint(amount) {
+    async function increaseMintCount() {
+        let mintCount = parseInt(document.getElementById(`mint-amount`).innerHTML)
+        if (mintCount < 10) {
+            document.getElementById(`mint-amount`).innerHTML = `${mintCount += 1}`
+        }
+    }
+
+    async function decreaseMintCount() {
+        let mintCount = parseInt(document.getElementById(`mint-amount`).innerHTML)
+        if (mintCount > 1) {
+            document.getElementById(`mint-amount`).innerHTML = `${mintCount -= 1}`
+        }
+    }
+
+    async function mint() {
+
+        let mintAmount = document.getElementById(`mint-amount`).innerHTML;
 
         let provider = new ethers.providers.Web3Provider(window.ethereum);
 
@@ -51,11 +74,11 @@
             provider.getSigner()
         );
 
-        document.getElementById(`mint-${amount}`).innerHTML = `<i class="fa fa-spinner fa-spin"></i>`
+        document.getElementById(`mint-button`).innerHTML = `<i class="fa fa-spinner fa-spin"></i>`
 
         try {
             let price = await contract.cost()
-            let txn = await contract.mint(amount, { value: price.mul(amount) })
+            let txn = await contract.mint(mintAmount, { value: price.mul(mintAmount) })
             const receipt = await txn.wait();
 
             // deactivateLoading()
