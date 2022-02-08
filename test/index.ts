@@ -118,6 +118,27 @@ describe("Pastel Party Club", function () {
 
   });
 
+  it("Should airdrop with airdropper", async function () {
+
+    ppc.setAirdropper(addr1.address)
+
+    await ppc.connect(addr1).airdrop(
+      [
+        owner.address, owner.address, owner.address, owner.address, owner.address,
+        addr1.address, addr1.address, addr1.address, addr1.address, addr1.address,
+        addr2.address, addr2.address, addr2.address, addr2.address, addr2.address,
+      ])
+
+    expect(await ppc.totalSupply()).to.equal(15)
+    expect(await ppc.ownerOf(0)).to.equal(owner.address)
+    expect(await ppc.ownerOf(4)).to.equal(owner.address)
+    expect(await ppc.ownerOf(5)).to.equal(addr1.address)
+    expect(await ppc.ownerOf(9)).to.equal(addr1.address)
+    expect(await ppc.ownerOf(10)).to.equal(addr2.address)
+    expect(await ppc.ownerOf(14)).to.equal(addr2.address)
+
+  });
+
   it("Should fail to airdrop if not owner", async function () {
     await expect(
       ppc.connect(addr1).airdrop(
@@ -126,7 +147,7 @@ describe("Pastel Party Club", function () {
           addr1.address, addr1.address, addr1.address, addr1.address, addr1.address,
           addr2.address, addr2.address, addr2.address, addr2.address, addr2.address,
         ])
-    ).to.be.revertedWith('Ownable: caller is not the owner')
+    ).to.be.revertedWith('PPC: caller is not the owner or airdropper')
 
   });
 

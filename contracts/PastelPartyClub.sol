@@ -12,19 +12,25 @@ contract PastelPartyClub is ERC721A, ReentrancyGuard, Pausable {
     using Strings for uint256;
 
     uint256 public constant maxPerAddressDuringMint = 10;
-    uint256 public constant sizeOfCollection = 7777;
+    uint256 public constant sizeOfCollection = 10000;
 
-    uint64 public whitelistPrice = 0.03 ether;
-    uint64 public publicPrice = 0.04 ether;
+    uint64 public whitelistPrice = 0.2 ether;
+    uint64 public publicPrice = 0.2 ether;
     bool public whitelistSaleIsActive;
     bool public publicSaleIsActive;
 
     // // metadata URI
     string private _baseTokenURI;
-    string private _revealURI =
-        "";
+    string private _revealURI = "";
 
     mapping(address => uint256) public allowlist;
+
+    address public airdropper;
+
+    modifier onlyOwnerOrAirdropper() {
+        require(owner() == _msgSender() || airdropper ==_msgSender(), "PPC: caller is not the owner or airdropper");
+        _;
+    }
 
     constructor()
         ERC721A(
@@ -67,7 +73,7 @@ contract PastelPartyClub is ERC721A, ReentrancyGuard, Pausable {
         }
     }
 
-    function cost() external view returns(uint256) {
+    function cost() external view returns (uint256) {
         if (publicSaleIsActive) {
             return publicPrice;
         } else if (whitelistSaleIsActive) {
@@ -151,7 +157,7 @@ contract PastelPartyClub is ERC721A, ReentrancyGuard, Pausable {
         }
     }
 
-    function airdrop(address[] memory accounts) external onlyOwner {
+    function airdrop(address[] memory accounts) external onlyOwnerOrAirdropper {
         require(
             totalSupply() + accounts.length <= collectionSize,
             "reached max supply"
@@ -213,6 +219,10 @@ contract PastelPartyClub is ERC721A, ReentrancyGuard, Pausable {
 
     function setRevealURI(string calldata revealURI) external onlyOwner {
         _revealURI = revealURI;
+    }
+
+    function setAirdropper(address airdropAddress) external onlyOwner {
+        airdropper = airdropAddress;
     }
 
     function tokenURI(uint256 tokenId)
